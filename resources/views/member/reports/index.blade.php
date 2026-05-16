@@ -28,7 +28,10 @@
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden card-hover" data-aos="fade-up">
                 <div class="p-5">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-2xl shrink-0">{{ $report->category->icon }}</div>
+                        <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-2xl shrink-0">
+                            {{-- Render icon dengan tag i untuk FontAwesome di tampilan list --}}
+                            <i class="{{ $report->category->icon }} text-primary"></i>
+                        </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-start justify-between gap-2">
                                 <div>
@@ -62,7 +65,7 @@
                         <div class="flex items-center {{ $i < count($timelineSteps) - 1 ? 'flex-1' : '' }}">
                             <div class="flex flex-col items-center">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm
-                                    {{ $currentStep >= $i ? 'gradient-primary text-white shadow-md' : 'bg-gray-100 text-gray-400' }}">
+                                    {{ $currentStep >= $i ? 'gradient-primary text-white shadow-md bg-primary' : 'bg-gray-100 text-gray-400' }}">
                                     <i class="fas {{ $step['icon'] }} text-xs"></i>
                                 </div>
                                 <p class="text-xs mt-1 font-medium {{ $currentStep >= $i ? 'text-primary' : 'text-gray-400' }} whitespace-nowrap">{{ $step['label'] }}</p>
@@ -98,7 +101,7 @@
                 <i class="fas fa-clipboard-list text-6xl text-gray-200 mb-4 block"></i>
                 <h3 class="text-lg font-bold text-gray-800 mb-2">Belum Ada Laporan</h3>
                 <p class="text-secondary text-sm mb-6">Mulai laporkan kerusakan infrastruktur di sekitar Anda.</p>
-                <button onclick="openCreateModal()" class="btn-primary text-white px-6 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 mx-auto">
+                <button onclick="openCreateModal()" class="btn-primary text-white bg-primary px-6 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 mx-auto">
                     <i class="fas fa-plus"></i> Buat Laporan Pertama
                 </button>
             </div>
@@ -114,55 +117,56 @@
 {{-- ===== CREATE REPORT MODAL ===== --}}
 <div id="createModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg mx-4 max-h-[92vh] overflow-y-auto">
-        <div class="flex items-center justify-between px-7 py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-3xl">
+        <div class="flex items-center justify-between px-7 py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-3xl z-10">
             <h2 class="text-lg font-bold text-gray-800"><i class="fas fa-clipboard-list mr-2 text-primary"></i> Buat Laporan Baru</h2>
-            <button onclick="closeCreateModal()" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500">
+            <button onclick="closeCreateModal()" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <form id="createForm" enctype="multipart/form-data" class="p-7 space-y-4">
             @csrf
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-tag mr-1 text-secondary"></i> Kategori Kerusakan <span class="text-danger">*</span></label>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-tag mr-1 text-secondary"></i> Kategori Kerusakan <span class="text-danger text-red-500">*</span></label>
                 <select name="category_id" id="reportCategory" required
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none">
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white">
                     <option value="">-- Pilih Kategori --</option>
                     @foreach($categories as $cat)
-                    <option value="{{ $cat->id }}">{{ $cat->icon }} {{ $cat->name }}</option>
+                    {{-- FIX: Hanya menampilkan name saja, menghilangkan icon agar tidak bentrok dengan text HTML option --}}
+                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-heading mr-1 text-secondary"></i> Judul Laporan <span class="text-danger">*</span></label>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-heading mr-1 text-secondary"></i> Judul Laporan <span class="text-danger text-red-500">*</span></label>
                 <input type="text" name="title" required placeholder="Contoh: Jalan Rusak di RT 03"
-                       class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none">
+                       class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none">
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-map-marker-alt mr-1 text-secondary"></i> Lokasi / Alamat <span class="text-danger">*</span></label>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-map-marker-alt mr-1 text-secondary"></i> Lokasi / Alamat <span class="text-danger text-red-500">*</span></label>
                 <input type="text" name="location" required placeholder="Contoh: Jl. Mawar No. 5, RT 02 RW 04"
-                       class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none">
+                       class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none">
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-align-left mr-1 text-secondary"></i> Deskripsi Kerusakan <span class="text-danger">*</span></label>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-align-left mr-1 text-secondary"></i> Deskripsi Kerusakan <span class="text-danger text-red-500">*</span></label>
                 <textarea name="description" rows="4" required placeholder="Jelaskan kondisi kerusakan secara detail..."
                           class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none resize-none"></textarea>
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-camera mr-1 text-secondary"></i> Foto Kerusakan</label>
-                <div class="border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-primary transition-colors" id="dropZone">
+                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-primary hover:bg-gray-50 transition-colors" id="dropZone">
                     <input type="file" name="photo_damage" id="photoInput" accept="image/*" class="hidden" onchange="previewPhoto(this)">
                     <div id="uploadPrompt" class="text-center cursor-pointer" onclick="document.getElementById('photoInput').click()">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-300 mb-2 block"></i>
-                        <p class="text-sm text-secondary font-medium">Klik atau seret foto ke sini</p>
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3 block"></i>
+                        <p class="text-sm text-gray-600 font-medium">Klik atau seret foto ke sini</p>
                         <p class="text-xs text-gray-400 mt-1">JPG, PNG, WEBP · Maks 5MB</p>
                     </div>
                     <div id="photoPreview" class="hidden text-center">
-                        <img id="previewImg" class="max-h-32 mx-auto rounded-xl object-cover mb-2">
-                        <button type="button" onclick="clearPhoto()" class="text-xs text-red-500 hover:underline"><i class="fas fa-times mr-1"></i>Hapus foto</button>
+                        <img id="previewImg" class="max-h-32 mx-auto rounded-xl object-cover mb-3 shadow-sm">
+                        <button type="button" onclick="clearPhoto()" class="text-xs text-red-500 font-semibold hover:underline bg-red-50 px-3 py-1.5 rounded-lg"><i class="fas fa-times mr-1"></i>Hapus foto</button>
                     </div>
                 </div>
             </div>
-            <button type="button" onclick="submitReport()" class="btn-primary w-full text-white font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2">
+            <button type="button" onclick="submitReport()" class="btn-primary bg-primary w-full text-white font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-primary/90 transition-all">
                 <i class="fas fa-paper-plane"></i> Kirim Laporan
             </button>
         </form>
@@ -172,15 +176,17 @@
 {{-- ===== DETAIL MODAL ===== --}}
 <div id="detailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between px-7 py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-3xl">
+        <div class="flex items-center justify-between px-7 py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-3xl z-10">
             <h2 class="text-lg font-bold text-gray-800">Detail Laporan</h2>
-            <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500">
+            <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div id="detailContent" class="p-7">
-            <div class="skeleton h-32 rounded-xl mb-4"></div>
-            <div class="skeleton h-4 rounded w-3/4 mb-2"></div>
+            <div class="animate-pulse flex flex-col gap-4">
+                <div class="h-32 bg-gray-200 rounded-xl"></div>
+                <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -224,36 +230,40 @@ async function submitReport() {
 
 async function viewReport(id) {
     document.getElementById('detailModal').classList.remove('hidden');
-    document.getElementById('detailContent').innerHTML = '<div class="skeleton h-32 rounded-xl mb-4"></div><div class="skeleton h-4 rounded w-3/4 mb-2"></div>';
+    document.getElementById('detailContent').innerHTML = '<div class="animate-pulse flex flex-col gap-4"><div class="h-32 bg-gray-200 rounded-xl"></div><div class="h-4 bg-gray-200 rounded w-3/4"></div></div>';
 
     const res    = await fetch(`/member/laporan/${id}`, { headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN } });
     const report = await res.json();
 
     const responses = report.responses?.map(r => `
-        <div class="flex gap-3 bg-primary-50 rounded-xl p-4 mt-3">
+        <div class="flex gap-3 bg-blue-50/50 rounded-xl p-4 mt-3 border border-blue-100">
             <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shrink-0">${r.admin?.name?.charAt(0) || 'A'}</div>
             <div>
-                <p class="text-sm font-semibold text-gray-800">${r.admin?.name || 'Admin'} <span class="text-xs text-secondary ml-1">${new Date(r.created_at).toLocaleDateString('id-ID')}</span></p>
-                <p class="text-sm text-gray-700 mt-1">${r.message}</p>
-                ${r.photo_repair ? `<img src="/storage/${r.photo_repair}" class="mt-2 rounded-xl max-h-32 object-cover">` : ''}
+                <p class="text-sm font-semibold text-gray-800">${r.admin?.name || 'Admin'} <span class="text-xs text-gray-500 ml-1 font-normal">${new Date(r.created_at).toLocaleDateString('id-ID')}</span></p>
+                <p class="text-sm text-gray-700 mt-1 leading-relaxed">${r.message}</p>
+                ${r.photo_repair ? `<img src="/storage/${r.photo_repair}" class="mt-3 rounded-xl max-h-32 object-cover border border-gray-200 shadow-sm">` : ''}
             </div>
-        </div>`).join('') || '<p class="text-secondary text-sm italic py-3">Belum ada tanggapan dari admin.</p>';
+        </div>`).join('') || '<p class="text-gray-500 text-sm italic py-3 bg-gray-50 rounded-xl px-4 mt-2">Belum ada tanggapan dari admin untuk saat ini.</p>';
 
     document.getElementById('detailContent').innerHTML = `
         <div class="flex items-center justify-between mb-4">
-            <p class="font-mono text-primary font-bold">${report.code}</p>
-            <span class="status-badge ${{pending:'bg-yellow-100 text-yellow-700',process:'bg-blue-100 text-blue-700',completed:'bg-green-100 text-green-700',rejected:'bg-red-100 text-red-700'}[report.status] || 'bg-gray-100 text-gray-700'}">
+            <p class="font-mono text-primary font-bold text-sm">#${report.code}</p>
+            <span class="status-badge ${{pending:'bg-orange-50 text-orange-600',process:'bg-blue-50 text-blue-600',completed:'bg-green-50 text-green-600',rejected:'bg-red-50 text-red-600'}[report.status] || 'bg-gray-100 text-gray-700'} px-3 py-1 rounded-full text-xs font-bold">
                 ${{pending:'Menunggu',process:'Diproses',completed:'Selesai',rejected:'Ditolak'}[report.status] || report.status}
             </span>
         </div>
-        <h3 class="font-bold text-gray-800 text-lg mb-2">${report.title}</h3>
-        <p class="text-secondary text-sm mb-4">${report.description}</p>
-        ${report.photo_damage ? `<img src="/storage/${report.photo_damage}" class="w-full rounded-xl mb-5 max-h-52 object-cover">` : ''}
-        <div class="bg-gray-50 rounded-xl p-4 mb-5">
-            <p class="text-xs text-secondary"><i class="fas fa-map-marker-alt mr-1 text-primary"></i> Lokasi: <span class="text-gray-800 font-medium">${report.location}</span></p>
+        <h3 class="font-bold text-gray-800 text-xl mb-2">${report.title}</h3>
+        <p class="text-gray-600 text-sm mb-4 leading-relaxed">${report.description}</p>
+        ${report.photo_damage ? `<img src="/storage/${report.photo_damage}" class="w-full rounded-xl mb-5 max-h-64 object-cover shadow-sm border border-gray-100">` : ''}
+        <div class="bg-gray-50 rounded-xl p-4 mb-5 border border-gray-100 flex items-start gap-2">
+            <i class="fas fa-map-marker-alt text-red-500 mt-0.5"></i>
+            <div>
+                <p class="text-xs text-gray-500 font-semibold mb-0.5">Lokasi Kerusakan:</p>
+                <span class="text-gray-800 font-medium text-sm">${report.location}</span>
+            </div>
         </div>
-        <div class="border-t border-gray-100 pt-4">
-            <h4 class="font-bold text-gray-800 mb-2"><i class="fas fa-comments mr-2 text-primary"></i> Tanggapan Admin</h4>
+        <div class="border-t border-gray-100 pt-5">
+            <h4 class="font-bold text-gray-800 mb-3"><i class="fas fa-comments mr-2 text-primary"></i> Tanggapan Admin</h4>
             ${responses}
         </div>`;
 }

@@ -2,145 +2,175 @@
 @section('page_title', 'Dashboard')
 
 @section('admin_content')
-{{-- ===================== STAT CARDS ===================== --}}
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    @php
-    $cards = [
-        ['label'=>'Total Laporan',  'value'=>$stats['total_reports'],  'icon'=>'fa-clipboard-list', 'color'=>'from-blue-500 to-blue-600',    'sub'=>'Semua laporan',     'delay'=>0],
-        ['label'=>'Menunggu',       'value'=>$stats['pending'],         'icon'=>'fa-clock',          'color'=>'from-yellow-400 to-yellow-500', 'sub'=>'Perlu ditangani',   'delay'=>100],
-        ['label'=>'Diproses',       'value'=>$stats['process'],         'icon'=>'fa-wrench',         'color'=>'from-purple-500 to-purple-600', 'sub'=>'Sedang dikerjakan', 'delay'=>200],
-        ['label'=>'Selesai',        'value'=>$stats['completed'],       'icon'=>'fa-check-circle',   'color'=>'from-emerald-500 to-emerald-600','sub'=>'Berhasil selesai', 'delay'=>300],
-    ];
-    @endphp
-
-    @foreach($cards as $card)
-    <div class="bg-gradient-to-br {{ $card['color'] }} rounded-2xl p-5 text-white shadow-lg card-hover" data-aos="fade-up" data-aos-delay="{{ $card['delay'] }}">
-        <div class="flex items-center justify-between mb-3">
-            <i class="fas {{ $card['icon'] }} text-2xl text-white/80"></i>
-            <span class="text-white/50 text-xs font-medium">{{ $card['sub'] }}</span>
-        </div>
-        <p class="text-3xl font-extrabold">{{ $card['value'] }}</p>
-        <p class="text-white/80 text-sm font-medium mt-1">{{ $card['label'] }}</p>
+{{-- Header (Opsional, sesuai gambar) --}}
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+        <h2 class="text-2xl font-extrabold text-gray-800">Dashboard</h2>
+        <p class="text-sm text-gray-500">Ringkasan data laporan kerusakan infrastruktur desa.</p>
     </div>
-    @endforeach
-</div>
-
-{{-- Secondary stats --}}
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3 card-hover" data-aos="fade-up">
-        <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
-            <i class="fas fa-times-circle text-red-500"></i>
-        </div>
-        <div>
-            <p class="text-2xl font-bold text-gray-800">{{ $stats['rejected'] }}</p>
-            <p class="text-xs text-secondary">Ditolak</p>
-        </div>
-    </div>
-    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3 card-hover" data-aos="fade-up" data-aos-delay="100">
-        <div class="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
-            <i class="fas fa-users text-primary"></i>
-        </div>
-        <div>
-            <p class="text-2xl font-bold text-gray-800">{{ $stats['total_users'] }}</p>
-            <p class="text-xs text-secondary">Pengguna</p>
-        </div>
-    </div>
-    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3 card-hover" data-aos="fade-up" data-aos-delay="200">
-        <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-            <i class="fas fa-tags text-purple-600"></i>
-        </div>
-        <div>
-            <p class="text-2xl font-bold text-gray-800">{{ $stats['total_categories'] }}</p>
-            <p class="text-xs text-secondary">Kategori</p>
-        </div>
-    </div>
-    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3 card-hover" data-aos="fade-up" data-aos-delay="300">
-        <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-            <i class="fas fa-newspaper text-green-600"></i>
-        </div>
-        <div>
-            <p class="text-2xl font-bold text-gray-800">{{ $stats['total_news'] }}</p>
-            <p class="text-xs text-secondary">Berita</p>
-        </div>
+    <div class="flex gap-2">
+        <a href="{{ route('admin.export.reports-pdf') }}" class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2 shadow-sm">
+            <i class="fas fa-download"></i> Export Data
+        </a>
+        <a href="{{ route('admin.reports.index') }}" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 flex items-center gap-2 shadow-sm shadow-primary/30">
+            <i class="fas fa-plus"></i> Kelola Laporan
+        </a>
     </div>
 </div>
 
-{{-- Charts --}}
-<div class="grid lg:grid-cols-5 gap-6 mb-8">
-    <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-6" data-aos="fade-right">
-        <div class="flex items-center justify-between mb-4">
-            <div>
-                <h3 class="font-bold text-gray-800">Tren Laporan Bulanan</h3>
-                <p class="text-xs text-secondary">6 bulan terakhir</p>
+{{-- ===================== MAIN STAT CARDS (E-KECAMATAN STYLE) ===================== --}}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+    {{-- Card 1: Total (Solid Primary) --}}
+    <div class="bg-primary rounded-xl p-6 text-white shadow-lg shadow-primary/20 relative overflow-hidden" data-aos="fade-up">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+        <p class="text-white/80 text-sm font-medium mb-1">Total Laporan</p>
+        <p class="text-4xl font-extrabold mb-4">{{ $stats['total_reports'] ?? 0 }}</p>
+        <div class="flex items-center gap-2 text-xs bg-white/20 w-fit px-3 py-1.5 rounded-md backdrop-blur-sm">
+            <i class="fas fa-folder-open"></i> Keseluruhan Data
+        </div>
+    </div>
+
+    {{-- Card 2: Menunggu (White) --}}
+    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex justify-between items-start mb-2">
+            <p class="text-gray-500 text-sm font-medium">Menunggu</p>
+            <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center">
+                <i class="fas fa-clock text-orange-500 text-sm"></i>
             </div>
-            <span class="bg-primary-100 text-primary text-xs font-semibold px-3 py-1 rounded-full">{{ $stats['percent_completed'] }}% selesai</span>
         </div>
-        <canvas id="monthlyChart" height="120"></canvas>
+        <p class="text-4xl font-extrabold text-gray-800 mb-4">{{ $stats['pending'] ?? 0 }}</p>
+        <div class="flex items-center gap-2 text-xs text-orange-500 font-medium">
+            <i class="fas fa-exclamation-circle"></i> Menunggu verifikasi
+        </div>
     </div>
-    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6" data-aos="fade-left">
-        <div class="mb-4">
-            <h3 class="font-bold text-gray-800">Per Kategori</h3>
-            <p class="text-xs text-secondary">Distribusi laporan</p>
+
+    {{-- Card 3: Diproses (White) --}}
+    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between" data-aos="fade-up" data-aos-delay="200">
+        <div class="flex justify-between items-start mb-2">
+            <p class="text-gray-500 text-sm font-medium">Sedang Diproses</p>
+            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                <i class="fas fa-spinner text-blue-500 text-sm"></i>
+            </div>
         </div>
-        <canvas id="categoryChart" height="160"></canvas>
+        <p class="text-4xl font-extrabold text-gray-800 mb-4">{{ $stats['process'] ?? 0 }}</p>
+        <div class="flex items-center gap-2 text-xs text-blue-500 font-medium">
+            <i class="fas fa-tools"></i> Sedang ditangani staf
+        </div>
+    </div>
+
+    {{-- Card 4: Selesai (White) --}}
+    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between" data-aos="fade-up" data-aos-delay="300">
+        <div class="flex justify-between items-start mb-2">
+            <p class="text-gray-500 text-sm font-medium">Selesai</p>
+            <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center">
+                <i class="fas fa-check text-green-500 text-sm"></i>
+            </div>
+        </div>
+        <p class="text-4xl font-extrabold text-gray-800 mb-4">{{ $stats['completed'] ?? 0 }}</p>
+        <div class="flex items-center gap-2 text-xs text-green-500 font-medium">
+            <i class="fas fa-arrow-up"></i> Berhasil diselesaikan
+        </div>
     </div>
 </div>
 
-{{-- Latest Reports Table --}}
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100" data-aos="fade-up">
-    <div class="flex items-center justify-between p-6 border-b border-gray-100">
-        <div>
-            <h3 class="font-bold text-gray-800">Laporan Terbaru</h3>
-            <p class="text-xs text-secondary">8 laporan terakhir masuk</p>
+{{-- ===================== CHARTS ===================== --}}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    {{-- Line/Bar Chart --}}
+    <div class="lg:col-span-2 bg-white rounded-xl border border-gray-100 p-6 shadow-sm" data-aos="fade-up">
+        <div class="mb-6">
+            <h3 class="font-extrabold text-gray-800 text-lg">Statistik Laporan</h3>
+            <p class="text-xs text-gray-500">6 Bulan Terakhir</p>
         </div>
-        <a href="{{ route('admin.reports.index') }}" class="text-primary text-sm font-semibold hover:underline flex items-center gap-1">
-            Lihat Semua <i class="fas fa-arrow-right text-xs"></i>
+        <div class="relative w-full h-64">
+            <canvas id="monthlyChart"></canvas>
+        </div>
+    </div>
+
+    {{-- Doughnut Chart --}}
+    <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm" data-aos="fade-up" data-aos-delay="100">
+        <div class="mb-6">
+            <h3 class="font-extrabold text-gray-800 text-lg">Persentase Status</h3>
+        </div>
+        <div class="relative w-full h-48 flex justify-center mb-4">
+            <canvas id="categoryChart"></canvas>
+        </div>
+        <div class="mt-4 space-y-3">
+            <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2 text-gray-600"><span class="w-3 h-3 rounded-full bg-primary"></span> Selesai</div>
+                <span class="font-bold text-gray-800">{{ $stats['percent_completed'] ?? 0 }}%</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2 text-gray-600"><span class="w-3 h-3 rounded-full bg-blue-300"></span> Diproses</div>
+                <span class="font-bold text-gray-800">{{ $stats['percent_process'] ?? 0 }}%</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2 text-gray-600"><span class="w-3 h-3 rounded-full bg-gray-200"></span> Baru/Pending</div>
+                <span class="font-bold text-gray-800">{{ $stats['percent_pending'] ?? 0 }}%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- ===================== TABLE ===================== --}}
+<div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-aos="fade-up">
+    <div class="flex items-center justify-between p-6 border-b border-gray-50">
+        <h3 class="font-extrabold text-gray-800 text-lg">Laporan Terbaru</h3>
+        <a href="{{ route('admin.reports.index') }}" class="text-primary text-sm font-semibold hover:text-primary/80 transition-colors">
+            Lihat Semua
         </a>
     </div>
     <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b border-gray-50 text-left">
-                    <th class="px-6 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">Kode</th>
-                    <th class="px-6 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">Laporan</th>
-                    <th class="px-6 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">Pelapor</th>
-                    <th class="px-6 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">Kategori</th>
-                    <th class="px-6 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">Tanggal</th>
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50/50 text-gray-500 font-medium">
+                <tr>
+                    <th class="px-6 py-4 font-semibold">Kode</th>
+                    <th class="px-6 py-4 font-semibold">Pelapor</th>
+                    <th class="px-6 py-4 font-semibold">Laporan</th>
+                    <th class="px-6 py-4 font-semibold">Kategori</th>
+                    <th class="px-6 py-4 font-semibold">Status</th>
+                    <th class="px-6 py-4 font-semibold text-right">Tanggal</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-                @forelse($latestReports as $report)
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-3.5 font-mono text-xs font-semibold text-primary">{{ $report->code }}</td>
-                    <td class="px-6 py-3.5">
-                        <p class="font-semibold text-gray-800 truncate max-w-xs">{{ $report->title }}</p>
-                        <p class="text-xs text-secondary truncate">{{ Str::limit($report->location, 40) }}</p>
+                @forelse($latestReports ?? [] as $report)
+                <tr class="hover:bg-gray-50/50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <span class="font-mono text-primary font-semibold">{{ $report->code }}</span>
                     </td>
-                    <td class="px-6 py-3.5">
-                        <div class="flex items-center gap-2">
-                            <img src="{{ $report->user->avatar_url }}" class="w-6 h-6 rounded-full">
-                            <span class="text-gray-700 font-medium">{{ $report->user->name }}</span>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <img src="{{ $report->user->avatar_url ?? 'https://ui-avatars.com/api/?name='.$report->user->name }}" class="w-8 h-8 rounded-full bg-gray-100">
+                            <span class="text-gray-800 font-medium">{{ $report->user->name }}</span>
                         </div>
                     </td>
-                    <td class="px-6 py-3.5 text-gray-700">{{ $report->category->name }}</td>
-                    <td class="px-6 py-3.5">
+                    <td class="px-6 py-4">
+                        <p class="text-gray-800 font-medium truncate max-w-[200px]">{{ $report->title }}</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-gray-500">{{ $report->category->name }}</span>
+                    </td>
+                    <td class="px-6 py-4">
                         @php
-                        $statusClasses = [
-                            'pending'   => 'bg-yellow-100 text-yellow-700',
-                            'process'   => 'bg-blue-100 text-blue-700',
-                            'completed' => 'bg-green-100 text-green-700',
-                            'rejected'  => 'bg-red-100 text-red-700',
-                        ];
+                            $statusBadge = match($report->status) {
+                                'pending' => 'bg-orange-50 text-orange-600',
+                                'process' => 'bg-blue-50 text-blue-600',
+                                'completed' => 'bg-green-50 text-green-600',
+                                'rejected' => 'bg-red-50 text-red-600',
+                                default => 'bg-gray-50 text-gray-600'
+                            };
                         @endphp
-                        <span class="status-badge {{ $statusClasses[$report->status] ?? 'bg-gray-100 text-gray-700' }}">
-                            {{ $report->status_label }}
+                        <span class="px-3 py-1 rounded-full text-xs font-bold {{ $statusBadge }}">
+                            {{ ucfirst($report->status) }}
                         </span>
                     </td>
-                    <td class="px-6 py-3.5 text-xs text-secondary">{{ $report->created_at->format('d M Y') }}</td>
+                    <td class="px-6 py-4 text-right text-gray-500">
+                        {{ $report->created_at->format('d M Y') }}
+                    </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="px-6 py-12 text-center text-secondary">Belum ada laporan masuk.</td></tr>
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center text-gray-400">Belum ada data laporan masuk.</td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
@@ -150,27 +180,61 @@
 
 @push('scripts')
 <script>
-const monthly = @json($monthlyChart);
-new Chart(document.getElementById('monthlyChart'), {
-    type: 'bar',
-    data: {
-        labels: monthly.map(d => d.month),
-        datasets: [
-            { label: 'Total', data: monthly.map(d => d.total), backgroundColor: 'rgba(37,99,235,0.15)', borderColor: '#2563eb', borderWidth: 2, borderRadius: 6, borderSkipped: false },
-            { label: 'Selesai', data: monthly.map(d => d.completed), backgroundColor: 'rgba(34,197,94,0.15)', borderColor: '#22c55e', borderWidth: 2, borderRadius: 6, borderSkipped: false }
-        ]
-    },
-    options: { responsive: true, plugins: { legend: { labels: { font: { family: 'Poppins', size: 11 } } } }, scales: { y: { beginAtZero: true, grid: { color: '#f8fafc' }, ticks: { stepSize: 1 } }, x: { grid: { display: false } } } }
-});
+// Chart Bulanan
+const monthly = @json($monthlyChart ?? []);
+const ctxMonthly = document.getElementById('monthlyChart');
+if(ctxMonthly) {
+    new Chart(ctxMonthly, {
+        type: 'bar',
+        data: {
+            labels: monthly.map(d => d.month),
+            datasets: [
+                { 
+                    label: 'Total Laporan', 
+                    data: monthly.map(d => d.total), 
+                    backgroundColor: '#2563eb', // Warna primary
+                    borderRadius: 4,
+                    barThickness: 12
+                }
+            ]
+        },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { display: false } 
+            }, 
+            scales: { 
+                y: { beginAtZero: true, grid: { color: '#f3f4f6', drawBorder: false }, ticks: { stepSize: 1, color: '#9ca3af' } }, 
+                x: { grid: { display: false, drawBorder: false }, ticks: { color: '#9ca3af' } } 
+            } 
+        }
+    });
+}
 
-const cats = @json($categoryChart);
-new Chart(document.getElementById('categoryChart'), {
-    type: 'doughnut',
-    data: {
-        labels: cats.map(c => c.name),
-        datasets: [{ data: cats.map(c => c.reports_count), backgroundColor: ['#2563eb','#22c55e','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#64748b'], borderWidth: 0 }]
-    },
-    options: { responsive: true, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 10 } } } }
-});
+// Chart Doughnut (Status)
+const cats = @json($categoryChart ?? []);
+const ctxCategory = document.getElementById('categoryChart');
+if(ctxCategory) {
+    new Chart(ctxCategory, {
+        type: 'doughnut',
+        data: {
+            labels: cats.map(c => c.name),
+            datasets: [{ 
+                data: cats.map(c => c.reports_count), 
+                backgroundColor: ['#2563eb', '#93c5fd', '#e5e7eb', '#10b981', '#f59e0b'], 
+                borderWidth: 0 
+            }]
+        },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            cutout: '75%', 
+            plugins: { 
+                legend: { display: false } 
+            } 
+        }
+    });
+}
 </script>
 @endpush

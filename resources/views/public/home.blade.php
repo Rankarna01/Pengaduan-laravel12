@@ -181,7 +181,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
             @foreach($categories as $i => $cat)
             <div class="bg-surface rounded-2xl p-5 text-center card-hover border border-gray-100 cursor-pointer" data-aos="fade-up" data-aos-delay="{{ $i * 80 }}">
-                <div class="text-4xl mb-3">{{ $cat->icon }}</div>
+                <div class="text-4xl mb-3 text-primary"><i class="{{ $cat->icon }}"></i></div>
                 <p class="font-semibold text-gray-800 text-sm">{{ $cat->name }}</p>
                 <p class="text-xs text-secondary mt-1">{{ $cat->reports->count() }} laporan</p>
             </div>

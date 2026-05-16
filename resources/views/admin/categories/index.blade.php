@@ -18,7 +18,7 @@
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
     @foreach($categories as $i => $cat)
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 card-hover text-center" data-aos="fade-up" data-aos-delay="{{ ($i % 4) * 80 }}" id="cat-card-{{ $cat->id }}">
-        <div class="text-3xl mb-2">{{ $cat->icon }}</div>
+        <div class="text-3xl mb-2 text-primary"><i class="{{ $cat->icon }}"></i></div>
         <p class="font-bold text-gray-800 text-sm">{{ $cat->name }}</p>
         <p class="text-xs text-secondary mt-0.5">{{ $cat->reports_count }} laporan</p>
         <div class="flex justify-center gap-2 mt-3">
@@ -52,7 +52,7 @@
             <tbody class="divide-y divide-gray-50">
                 @forelse($categories as $cat)
                 <tr class="hover:bg-gray-50 transition-colors" id="cat-row-{{ $cat->id }}">
-                    <td class="px-5 py-3.5 text-2xl">{{ $cat->icon }}</td>
+                    <td class="px-5 py-3.5 text-2xl text-primary"><i class="{{ $cat->icon }}"></i></td>
                     <td class="px-5 py-3.5 font-semibold text-gray-800">{{ $cat->name }}</td>
                     <td class="px-5 py-3.5 font-mono text-xs text-secondary">{{ $cat->slug }}</td>
                     <td class="px-5 py-3.5">
@@ -90,8 +90,8 @@
         <div class="p-7 space-y-4">
             <input type="hidden" id="catId">
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-smile mr-1 text-secondary"></i> Icon (Emoji) <span class="text-danger">*</span></label>
-                <input type="text" id="catIcon" maxlength="10" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-2xl text-center focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none" placeholder="🏗️">
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-icons mr-1 text-secondary"></i> Icon (Font Awesome Class) <span class="text-danger">*</span></label>
+                <input type="text" id="catIcon" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none" placeholder="fa-solid fa-road">
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-tag mr-1 text-secondary"></i> Nama Kategori <span class="text-danger">*</span></label>

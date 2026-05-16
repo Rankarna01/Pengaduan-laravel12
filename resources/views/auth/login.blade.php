@@ -2,27 +2,49 @@
 @section('title', 'Masuk — Pengaduan Desa')
 
 @section('content')
-<div class="min-h-screen gradient-primary flex items-center justify-center p-4 relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+{{-- Tambahkan script Lottie Player di sini atau pindahkan ke layout master jika diperlukan --}}
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<div class="min-h-screen bg-surface flex items-center justify-center p-4 relative overflow-hidden">
+    {{-- Dekorasi Background Minimalis --}}
+    <div class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
     <div class="absolute bottom-0 left-0 w-80 h-80 bg-blue-300/10 rounded-full blur-3xl"></div>
 
-    <div class="w-full max-w-md" data-aos="fade-up">
-        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+    {{-- Container Card (Split Screen) --}}
+    <div class="w-full max-w-4xl bg-white rounded-xl shadow-xl overflow-hidden flex flex-col md:flex-row relative z-10" data-aos="fade-up">
+        
+        {{-- Kiri: Lottie Animation (Hidden di Mobile) --}}
+        <div class="hidden md:flex md:w-1/2 bg-gray-50/50 items-center justify-center p-8 border-r border-gray-100">
+            <div class="w-full max-w-sm">
+                <lottie-player 
+                    src="{{ asset('Services.json') }}" 
+                    background="transparent" 
+                    speed="1" 
+                    style="width: 100%; height: auto;" 
+                    loop 
+                    autoplay>
+                </lottie-player>
+            </div>
+        </div>
+
+        {{-- Kanan: Form Login --}}
+        <div class="w-full md:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
+            
             {{-- Header --}}
-            <div class="gradient-primary px-8 py-8 text-center">
-                <div class="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-landmark text-white text-3xl"></i>
+            <div class="text-center mb-8">
+                <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-landmark text-primary text-2xl"></i>
                 </div>
-                <h1 class="text-2xl font-extrabold text-white">Selamat Datang</h1>
-                <p class="text-white/70 text-sm mt-1">Masuk ke akun Pengaduan Desa Anda</p>
+                <h1 class="text-2xl font-bold text-gray-800">Selamat Datang</h1>
+                <p class="text-gray-500 text-sm mt-1">Masuk ke akun Pengaduan Desa Anda</p>
             </div>
 
             {{-- Form --}}
-            <form action="{{ route('login.post') }}" method="POST" class="px-8 py-8 space-y-5">
+            <form action="{{ route('login.post') }}" method="POST" class="space-y-5">
                 @csrf
 
                 @if($errors->any())
-                <div class="bg-danger-50 border border-danger/20 rounded-xl p-4 flex gap-3">
+                <div class="bg-danger-50 border border-danger/20 rounded-lg p-4 flex gap-3">
                     <i class="fas fa-exclamation-triangle text-danger text-xl mt-0.5"></i>
                     <div class="text-sm text-danger">{{ $errors->first() }}</div>
                 </div>
@@ -33,7 +55,7 @@
                         <i class="fas fa-envelope mr-1 text-secondary"></i> Email
                     </label>
                     <input type="email" name="email" value="{{ old('email') }}" required
-                           class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm @error('email') border-danger @enderror"
+                           class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm @error('email') border-danger @enderror"
                            placeholder="admin@pengaduan.desa.id">
                 </div>
 
@@ -43,49 +65,38 @@
                     </label>
                     <div class="relative" x-data="{ show: false }">
                         <input :type="show ? 'text' : 'password'" name="password" required
-                               class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm pr-12"
+                               class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm pr-12"
                                placeholder="••••••••">
-                        <button type="button" @click="show = !show" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                        <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <i :class="show ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="flex items-center">
-                    <input type="checkbox" name="remember" id="remember" class="rounded border-gray-300 text-primary">
-                    <label for="remember" class="ml-2 text-sm text-gray-600">Ingat saya</label>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" name="remember" id="remember" class="rounded text-primary focus:ring-primary/30 border-gray-300">
+                        <label for="remember" class="ml-2 text-sm text-gray-600">Ingat saya</label>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn-primary w-full text-white font-bold py-3.5 rounded-xl text-sm tracking-wide flex items-center justify-center gap-2">
+                <button type="submit" class="btn-primary w-full text-white bg-primary hover:bg-primary/90 font-semibold py-3 rounded-lg text-sm transition-all flex items-center justify-center gap-2">
                     <i class="fas fa-sign-in-alt"></i> Masuk ke Akun
                 </button>
             </form>
 
-            <div class="px-8 pb-8 text-center">
-                <p class="text-sm text-secondary">Belum punya akun?
+            {{-- Footer Links --}}
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-500">Belum punya akun? 
                     <a href="{{ route('register') }}" class="text-primary font-semibold hover:underline">Daftar Sekarang</a>
                 </p>
-                <a href="{{ route('home') }}" class="inline-flex items-center gap-1 text-xs text-secondary hover:text-gray-600 mt-3">
+                <a href="{{ route('home') }}" class="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 mt-4 transition-colors">
                     <i class="fas fa-arrow-left"></i> Kembali ke Beranda
                 </a>
             </div>
-        </div>
 
-        {{-- Demo credentials --}}
-        <div class="mt-4 glass rounded-2xl p-4 text-center">
-            <p class="text-white/60 text-xs mb-2 font-medium"><i class="fas fa-info-circle mr-1"></i> Akun Demo</p>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-                <div class="bg-white/10 rounded-lg p-2">
-                    <p class="text-white font-semibold"><i class="fas fa-user-shield mr-1"></i> Admin</p>
-                    <p class="text-white/70">admin@pengaduan.desa.id</p>
-                    <p class="text-white/70">admin123</p>
-                </div>
-                <div class="bg-white/10 rounded-lg p-2">
-                    <p class="text-white font-semibold"><i class="fas fa-user mr-1"></i> Masyarakat</p>
-                    <p class="text-white/70">user@pengaduan.desa.id</p>
-                    <p class="text-white/70">user123</p>
-                </div>
             </div>
+            
         </div>
     </div>
 </div>
