@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Berita Desa — Pengaduan Desa')
+@section('title', 'Berita Desa — ' . ($globalSettings['system_name'] ?? 'Pengaduan Desa'))
 
 @section('content')
 <div class="min-h-screen bg-surface flex flex-col">

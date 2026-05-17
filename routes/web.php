@@ -87,6 +87,10 @@ Route::prefix('admin')
          Route::post('/berita/{news}', [Admin\NewsController::class, 'update'])->name('news.update');
          Route::delete('/berita/{news}', [Admin\NewsController::class, 'destroy'])->name('news.destroy');
 
-         // Export PDF
-         Route::get('/export/laporan-pdf', [Admin\ExportController::class, 'reportsPdf'])->name('export.reports-pdf');
+         // Export Reports
+         Route::get('/export/reports-pdf', [\App\Http\Controllers\Admin\ExportController::class, 'reportsPdf'])->name('export.reports-pdf');
+
+         // Settings
+         Route::get('/pengaturan', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+         Route::put('/pengaturan', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
      });

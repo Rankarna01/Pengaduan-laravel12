@@ -5,12 +5,16 @@
                 {{-- Logo --}}
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5">
                     <div class="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center shadow">
+                    @if(isset($globalSettings['logo_url']) && $globalSettings['logo_url'])
+                        <img src="{{ asset('storage/' . $globalSettings['logo_url']) }}" class="w-full h-full object-cover rounded-xl" alt="Logo">
+                    @else
                         <i class="fas fa-landmark text-white text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="font-bold text-gray-800 text-sm leading-none">Pengaduan Desa</p>
-                        <p class="text-xs text-secondary leading-none">Infrastruktur</p>
-                    </div>
+                    @endif
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800 text-sm leading-none">{{ $globalSettings['system_name'] ?? 'Pengaduan Desa' }}</p>
+                    <p class="text-xs text-secondary leading-none">{{ $globalSettings['system_sub_name'] ?? 'Infrastruktur' }}</p>
+                </div>
                 </a>
 
                 {{-- Desktop Nav --}}

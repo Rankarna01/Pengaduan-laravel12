@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Beranda') — Pengaduan Desa</title>
+    <title>@yield('title', 'Beranda') — {{ $globalSettings['system_name'] ?? 'Pengaduan Desa' }}</title>
     <meta name="description" content="@yield('meta_description', 'Sistem Informasi Pelaporan Kerusakan Infrastruktur Desa — Laporkan dan pantau kerusakan infrastruktur di lingkungan Anda.')">
 
     {{-- Google Fonts: Poppins --}}

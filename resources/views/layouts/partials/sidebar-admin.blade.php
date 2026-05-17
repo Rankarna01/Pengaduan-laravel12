@@ -4,7 +4,7 @@
     {{-- Logo --}}
     <div class="flex items-center gap-3 px-6 py-6 border-b border-gray-50">
         <h1 class="text-primary font-extrabold text-xl italic tracking-wide uppercase">
-            E-Pengaduan
+            {{ $globalSettings['system_name'] ?? 'E-Pengaduan' }}
         </h1>
     </div>
 
@@ -54,6 +54,12 @@
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary transition-all">
             <i class="fas fa-file-pdf w-5 text-center"></i>
             <span>Export PDF</span>
+        </a>
+
+        <a href="{{ route('admin.settings.index') }}"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('admin.settings.*') ? 'bg-primary text-white shadow-md shadow-primary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
+            <i class="fas fa-cog w-5 text-center"></i>
+            <span>Pengaturan Sistem</span>
         </a>
     </nav>
 

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $item->title . ' — Pengaduan Desa')
+@section('title', $item->title . ' — ' . ($globalSettings['system_name'] ?? 'Pengaduan Desa'))
 @section('meta_description', $item->excerpt)
 
 @section('content')
