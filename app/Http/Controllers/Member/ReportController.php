@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Notifications\NewReportNotification;
+use Illuminate\Support\Facades\Notification;
 
 class ReportController extends Controller
 {
@@ -41,7 +44,7 @@ class ReportController extends Controller
             $photoPath = $request->file('photo_damage')->store('reports', 'public');
         }
 
-        Report::create([
+        $report = Report::create([
             'user_id'     => auth()->id(),
             'category_id' => $validated['category_id'],
             'code'        => Report::generateCode(),
@@ -51,7 +54,9 @@ class ReportController extends Controller
             'photo_damage'=> $photoPath,
             'status'      => 'pending',
         ]);
-
+        $admins = User::where('role', 'admin')->get();
+        Notification::send($admins, new NewReportNotification($report));
+        
         return response()->json(['message' => 'Laporan berhasil dikirim!', 'status' => 'success']);
     }
 

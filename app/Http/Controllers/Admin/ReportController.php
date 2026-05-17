@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Report;
 use App\Models\Response;
 use Illuminate\Http\Request;
+use App\Notifications\ReportStatusUpdatedNotification;
 
 class ReportController extends Controller
 {
@@ -39,6 +40,9 @@ class ReportController extends Controller
             'status' => ['required', 'in:pending,process,completed,rejected'],
         ]);
         $report->update(['status' => $request->status]);
+
+        $report->user->notify(new ReportStatusUpdatedNotification($report));
+        // ===============================
         return response()->json(['message' => 'Status laporan berhasil diperbarui.', 'status' => 'success', 'new_status' => $report->status]);
     }
 
@@ -63,6 +67,7 @@ class ReportController extends Controller
         ]);
 
         $report->update(['status' => $request->status]);
+        $report->user->notify(new ReportStatusUpdatedNotification($report, $request->message));
 
         $response->load('admin');
         return response()->json([

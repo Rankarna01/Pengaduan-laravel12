@@ -61,6 +61,18 @@
             <i class="fas fa-cog w-5 text-center"></i>
             <span>Pengaturan Sistem</span>
         </a>
+
+        <a href="{{ route('admin.notifications.index') }}"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('admin.notifications*') ? 'bg-primary text-white shadow-md shadow-primary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
+            <i class="fas fa-bell w-5 text-center"></i>
+            <span>Notifikasi</span>
+            
+            {{-- Badge Angka Notifikasi Belum Dibaca --}}
+            @php $unreadCount = auth()->user()->unreadNotifications->count(); @endphp
+            @if($unreadCount > 0)
+                <span class="ml-auto bg-red-50 text-red-600 text-[10px] rounded-full px-2 py-0.5 font-bold border border-red-100">{{ $unreadCount }}</span>
+            @endif
+        </a>
     </nav>
 
     {{-- Admin Info & Logout di Bawah --}}
