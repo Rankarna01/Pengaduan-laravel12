@@ -46,6 +46,10 @@ Route::prefix('member')
          Route::post('/laporan', [Member\ReportController::class, 'store'])->name('reports.store');
          Route::get('/laporan/{report}', [Member\ReportController::class, 'show'])->name('reports.show');
          Route::delete('/laporan/{report}', [Member\ReportController::class, 'destroy'])->name('reports.destroy');
+         Route::get('/notifikasi', [\App\Http\Controllers\Member\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifikasi/{id}/read', [\App\Http\Controllers\Member\NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifikasi/read-all', [\App\Http\Controllers\Member\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    Route::view('/panduan', 'member.panduan')->name('panduan');
      });
 
 /*

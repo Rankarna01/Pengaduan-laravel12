@@ -21,9 +21,10 @@ class ReportStatusUpdatedNotification extends Notification
         $this->responseMessage = $responseMessage;
     }
 
-    public function via($notifiable)
+   public function via($notifiable)
     {
-        return ['mail']; // Notifikasi dikirim via Email
+        // Tambahkan 'database' ke dalam array
+        return ['mail', 'database']; 
     }
 
     public function toMail($notifiable)
@@ -54,5 +55,25 @@ class ReportStatusUpdatedNotification extends Notification
              ->line('Terima kasih telah berpartisipasi dalam menjaga dan membangun infrastruktur desa kita!');
 
         return $mail;
+    }
+
+    public function toDatabase($notifiable)
+    {
+        $statusLabels = [
+            'pending'   => 'Menunggu Verifikasi',
+            'process'   => 'Sedang Diproses',
+            'completed' => 'Selesai',
+            'rejected'  => 'Ditolak',
+        ];
+
+        $statusName = $statusLabels[$this->report->status] ?? $this->report->status;
+
+        return [
+            'report_code' => $this->report->code,
+            'title'       => $this->report->title,
+            'status'      => $statusName,
+            'message'     => 'Status laporan Anda telah diperbarui menjadi ' . $statusName . '.',
+            'response'    => $this->responseMessage,
+        ];
     }
 }
