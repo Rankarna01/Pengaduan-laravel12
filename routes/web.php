@@ -50,6 +50,9 @@ Route::prefix('member')
     Route::get('/notifikasi/{id}/read', [\App\Http\Controllers\Member\NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifikasi/read-all', [\App\Http\Controllers\Member\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
     Route::view('/panduan', 'member.panduan')->name('panduan');
+    Route::get('/profil', [\App\Http\Controllers\Member\ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profil', [\App\Http\Controllers\Member\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profil/password', [\App\Http\Controllers\Member\ProfileController::class, 'updatePassword'])->name('profile.password');
      });
 
 /*

@@ -51,7 +51,7 @@
                     {{-- User Menu --}}
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-gray-100 transition-colors">
-                            <img src="{{ auth()->user()->avatar_url ?? 'https://ui-avatars.com/api/?name='.auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover border border-gray-200" alt="Avatar">
+                            <img src="{{ auth()->user()->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name) }}" class="w-8 h-8 rounded-full object-cover border border-gray-200" alt="Avatar">
                             <div class="text-left hidden sm:block">
                                 <p class="text-sm font-semibold text-gray-800 leading-none">{{ Str::words(auth()->user()->name, 2, '') }}</p>
                                 <p class="text-xs text-secondary mt-0.5">Masyarakat</p>
@@ -65,12 +65,24 @@
                                 <p class="text-xs text-secondary">Masuk sebagai</p>
                                 <p class="text-sm font-semibold text-gray-800 truncate" title="{{ auth()->user()->email }}">{{ auth()->user()->email }}</p>
                             </div>
-                            <a href="{{ route('member.dashboard') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
-                                <i class="fas fa-chart-pie w-4 text-center text-gray-400"></i> Dashboard
+                            
+                            {{-- Diganti dari Dashboard ke Profil Saya --}}
+                            <a href="{{ route('member.profile.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+                                <i class="fas fa-user-circle w-4 text-center text-gray-400"></i> Profil Saya
                             </a>
+                            
                             <a href="{{ route('member.reports.index') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
                                 <i class="fas fa-clipboard-list w-4 text-center text-gray-400"></i> Laporan Saya
                             </a>
+                            
+                            {{-- Opsi untuk tampilan mobile --}}
+                            <a href="{{ route('member.dashboard') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors md:hidden">
+                                <i class="fas fa-chart-pie w-4 text-center text-gray-400"></i> Dashboard
+                            </a>
+                            <a href="{{ route('member.panduan') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors md:hidden">
+                                <i class="fas fa-book-open w-4 text-center text-gray-400"></i> Panduan
+                            </a>
+
                             <div class="border-t border-gray-100 mt-1 pt-1">
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf

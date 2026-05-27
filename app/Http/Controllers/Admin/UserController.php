@@ -25,15 +25,19 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'nik'      => ['required', 'string', 'digits:16', 'unique:users'],
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'email', 'unique:users'],
             'phone'    => ['nullable', 'string', 'max:20'],
+            'alamat'   => ['required', 'string'],
             'password' => ['required', 'string', 'min:8'],
         ]);
         $user = User::create([
+            'nik'      => $validated['nik'],
             'name'     => $validated['name'],
             'email'    => $validated['email'],
             'phone'    => $validated['phone'] ?? null,
+            'alamat'   => $validated['alamat'],
             'password' => Hash::make($validated['password']),
             'role'     => 'masyarakat',
         ]);
@@ -48,15 +52,19 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
+            'nik'      => ['required', 'string', 'digits:16', 'unique:users,nik,' . $user->id],
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'email', 'unique:users,email,' . $user->id],
             'phone'    => ['nullable', 'string', 'max:20'],
+            'alamat'   => ['required', 'string'],
             'password' => ['nullable', 'string', 'min:8'],
         ]);
         $data = [
+            'nik'   => $validated['nik'],
             'name'  => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
+            'alamat'=> $validated['alamat'],
         ];
         if (!empty($validated['password'])) {
             $data['password'] = Hash::make($validated['password']);

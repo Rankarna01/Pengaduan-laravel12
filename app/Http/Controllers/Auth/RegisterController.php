@@ -18,23 +18,31 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
+            'nik'                   => ['required', 'string', 'digits:16', 'unique:users'],
             'name'                  => ['required', 'string', 'max:255'],
             'email'                 => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone'                 => ['nullable', 'string', 'max:20'],
+            'alamat'                => ['required', 'string'],
             'password'              => ['required', 'string', 'min:8', 'confirmed'],
         ], [
+            'nik.required'          => 'NIK wajib diisi.',
+            'nik.digits'            => 'NIK harus 16 digit.',
+            'nik.unique'            => 'NIK sudah terdaftar.',
             'name.required'         => 'Nama wajib diisi.',
             'email.required'        => 'Email wajib diisi.',
             'email.unique'          => 'Email sudah terdaftar.',
+            'alamat.required'       => 'Alamat wajib diisi.',
             'password.required'     => 'Password wajib diisi.',
             'password.min'          => 'Password minimal 8 karakter.',
             'password.confirmed'    => 'Konfirmasi password tidak cocok.',
         ]);
 
         $user = User::create([
+            'nik'      => $validated['nik'],
             'name'     => $validated['name'],
             'email'    => $validated['email'],
             'phone'    => $validated['phone'] ?? null,
+            'alamat'   => $validated['alamat'],
             'password' => Hash::make($validated['password']),
             'role'     => 'masyarakat',
         ]);

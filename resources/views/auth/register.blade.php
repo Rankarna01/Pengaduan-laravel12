@@ -55,6 +55,15 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <i class="fas fa-id-card mr-1 text-secondary"></i> NIK (Nomor Induk Kependudukan) <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" name="nik" value="{{ old('nik') }}" required minlength="16" maxlength="16"
+                           class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm @error('nik') border-danger @enderror"
+                           placeholder="Masukkan 16 digit NIK">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
                         <i class="fas fa-user mr-1 text-secondary"></i> Nama Lengkap <span class="text-danger">*</span>
                     </label>
                     <input type="text" name="name" value="{{ old('name') }}" required
@@ -78,6 +87,15 @@
                     <input type="text" name="phone" value="{{ old('phone') }}"
                            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm"
                            placeholder="08xxxxxxxxxx">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <i class="fas fa-map-marker-alt mr-1 text-secondary"></i> Alamat Lengkap <span class="text-danger">*</span>
+                    </label>
+                    <textarea name="alamat" required rows="2"
+                           class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm @error('alamat') border-danger @enderror"
+                           placeholder="Alamat lengkap sesuai KTP">{{ old('alamat') }}</textarea>
                 </div>
 
                 <div>

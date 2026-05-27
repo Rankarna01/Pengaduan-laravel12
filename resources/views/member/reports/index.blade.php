@@ -194,10 +194,10 @@
                 {{-- Foto --}}
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                        <i class="fas fa-camera"></i> Foto Kerusakan <span class="text-gray-400 normal-case tracking-normal font-normal ml-1">(Opsional)</span>
+                        <i class="fas fa-camera"></i> Foto Kerusakan <span class="text-red-500">*</span>
                     </label>
                     <div class="border-2 border-dashed border-gray-300 rounded-2xl p-6 hover:border-primary hover:bg-blue-50/50 transition-all cursor-pointer group bg-gray-50" id="dropZone" onclick="document.getElementById('photoInput').click()">
-                        <input type="file" name="photo_damage" id="photoInput" accept="image/*" class="hidden" onchange="previewPhoto(this)">
+                        <input type="file" name="photo_damage" id="photoInput" required accept="image/*" class="hidden" onchange="previewPhoto(this)">
                         
                         <div id="uploadPrompt" class="text-center">
                             <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm border border-gray-100 group-hover:border-primary/30 transition-all">
@@ -274,10 +274,27 @@ function clearPhoto() {
 }
 
 async function submitReport() {
-    // Validasi form manual sebelum fetch (karena ini pakai fetch, required HTML5 tidak trigger otomatis)
+    // Validasi form manual dengan SweetAlert Custom Handler
     const form = document.getElementById('createForm');
     if(!form.checkValidity()) {
-        form.reportValidity();
+        const firstInvalid = form.querySelector(':invalid');
+        let errorMsg = 'Harap lengkapi semua data yang diwajibkan.';
+        
+        if (firstInvalid) {
+            if (firstInvalid.name === 'category_id') errorMsg = 'Silakan pilih kategori kerusakan terlebih dahulu.';
+            else if (firstInvalid.name === 'title') errorMsg = 'Judul laporan tidak boleh kosong.';
+            else if (firstInvalid.name === 'location') errorMsg = 'Lokasi/Alamat kerusakan tidak boleh kosong.';
+            else if (firstInvalid.name === 'description') errorMsg = 'Deskripsi kerusakan tidak boleh kosong.';
+            else if (firstInvalid.name === 'photo_damage') errorMsg = 'Anda wajib mengunggah foto bukti kerusakan.';
+        }
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops! Data Belum Lengkap',
+            text: errorMsg,
+            confirmButtonColor: '#2563eb',
+            confirmButtonText: 'Saya Mengerti'
+        });
         return;
     }
 

@@ -41,6 +41,7 @@
             <thead>
                 <tr class="border-b border-gray-50 bg-gray-50/50 text-left">
                     <th class="px-5 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">Pengguna</th>
+                    <th class="px-5 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">NIK</th>
                     <th class="px-5 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">Email</th>
                     <th class="px-5 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">No. HP</th>
                     <th class="px-5 py-3 text-xs font-semibold text-secondary uppercase tracking-wider">Total Laporan</th>
@@ -57,6 +58,7 @@
                             <p class="font-semibold text-gray-800">{{ $user->name }}</p>
                         </div>
                     </td>
+                    <td class="px-5 py-3.5 text-gray-600">{{ $user->nik ?? '-' }}</td>
                     <td class="px-5 py-3.5 text-gray-600">{{ $user->email }}</td>
                     <td class="px-5 py-3.5 text-gray-600">{{ $user->phone ?? '-' }}</td>
                     <td class="px-5 py-3.5">
@@ -100,6 +102,10 @@
         <form id="userForm" class="p-7 space-y-4">
             <input type="hidden" id="userId">
             <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-id-card mr-1 text-secondary"></i> NIK <span class="text-danger">*</span></label>
+                <input type="text" id="userNik" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none" placeholder="16 digit NIK">
+            </div>
+            <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-user mr-1 text-secondary"></i> Nama Lengkap <span class="text-danger">*</span></label>
                 <input type="text" id="userName" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none" placeholder="Nama lengkap">
             </div>
@@ -110,6 +116,10 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-phone mr-1 text-secondary"></i> No. HP</label>
                 <input type="text" id="userPhone" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none" placeholder="08xxxxxxxxxx">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5"><i class="fas fa-map-marker-alt mr-1 text-secondary"></i> Alamat Lengkap <span class="text-danger">*</span></label>
+                <textarea id="userAlamat" required rows="2" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none" placeholder="Alamat lengkap"></textarea>
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1.5">
@@ -148,9 +158,11 @@ async function editUser(id) {
     document.getElementById('userModal').classList.remove('hidden');
     document.getElementById('modalTitle').textContent = 'Edit Pengguna';
     document.getElementById('userId').value    = user.id;
+    document.getElementById('userNik').value   = user.nik || '';
     document.getElementById('userName').value  = user.name;
     document.getElementById('userEmail').value = user.email;
     document.getElementById('userPhone').value = user.phone || '';
+    document.getElementById('userAlamat').value = user.alamat || '';
     document.getElementById('userPassword').value = '';
     document.getElementById('passRequired').classList.add('hidden');
     document.getElementById('passOptional').classList.remove('hidden');
@@ -158,7 +170,14 @@ async function editUser(id) {
 
 async function submitUser() {
     const id   = document.getElementById('userId').value;
-    const data = { name: document.getElementById('userName').value, email: document.getElementById('userEmail').value, phone: document.getElementById('userPhone').value, password: document.getElementById('userPassword').value };
+    const data = { 
+        nik: document.getElementById('userNik').value,
+        name: document.getElementById('userName').value, 
+        email: document.getElementById('userEmail').value, 
+        phone: document.getElementById('userPhone').value, 
+        alamat: document.getElementById('userAlamat').value,
+        password: document.getElementById('userPassword').value 
+    };
     const url    = id ? `/admin/pengguna/${id}` : '/admin/pengguna';
     const method = id ? 'PUT' : 'POST';
 

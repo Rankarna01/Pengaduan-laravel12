@@ -29,12 +29,13 @@ class ReportController extends Controller
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'location'    => ['required', 'string', 'max:500'],
-            'photo_damage'=> ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'photo_damage'=> ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ], [
             'category_id.required' => 'Kategori wajib dipilih.',
             'title.required'       => 'Judul laporan wajib diisi.',
             'description.required' => 'Deskripsi wajib diisi.',
             'location.required'    => 'Lokasi wajib diisi.',
+            'photo_damage.required'=> 'Foto kerusakan wajib diunggah.',
             'photo_damage.image'   => 'File harus berupa gambar.',
             'photo_damage.max'     => 'Ukuran foto maksimal 5MB.',
         ]);
