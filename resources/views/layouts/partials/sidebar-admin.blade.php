@@ -28,6 +28,12 @@
             @endif
         </a>
 
+        <a href="{{ route('admin.budgets.index') }}"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('admin.budgets*') ? 'bg-primary text-white shadow-md shadow-primary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
+            <i class="fas fa-wallet w-5 text-center"></i>
+            <span>Anggaran Laporan</span>
+        </a>
+
         <p class="text-gray-400 text-[10px] uppercase tracking-widest px-2 mb-3 mt-6 font-bold">Manajemen</p>
 
         <a href="{{ route('admin.users.index') }}"

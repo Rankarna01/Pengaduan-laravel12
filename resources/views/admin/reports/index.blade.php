@@ -141,6 +141,21 @@ function openDetailModal(reportId) {
                 </div>
             </div>
             ${report.photo_damage ? `<img src="/storage/${report.photo_damage}" class="w-full rounded-xl mb-5 max-h-60 object-cover">` : ''}
+            
+            ${report.village_head_letter ? `
+            <div class="mb-5 bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-file-contract text-lg"></i></div>
+                    <div>
+                        <p class="font-bold text-blue-800 text-sm">Surat Kepala Desa</p>
+                        <p class="text-xs text-blue-600">Dokumen telah dilampirkan</p>
+                    </div>
+                </div>
+                <a href="/storage/${report.village_head_letter}" target="_blank" class="btn-primary text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm flex items-center gap-2">
+                    <i class="fas fa-download"></i> Unduh / Lihat
+                </a>
+            </div>` : ''}
+
             <div class="border-t border-gray-100 pt-5">
                 <h4 class="font-bold text-gray-800 mb-3"><i class="fas fa-comments mr-2 text-primary"></i> Riwayat Tanggapan</h4>
                 ${responses}
@@ -158,6 +173,10 @@ function openDetailModal(reportId) {
                     <div>
                         <label class="text-xs font-semibold text-gray-600 mb-1 block"><i class="fas fa-image mr-1"></i> Foto Bukti Perbaikan (opsional)</label>
                         <input type="file" name="photo_repair" accept="image/*" class="w-full text-sm text-secondary file:mr-3 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-primary-100 file:text-primary file:font-semibold hover:file:bg-primary hover:file:text-white file:transition-colors">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-600 mb-1 block"><i class="fas fa-file-pdf mr-1"></i> Surat Kepala Desa (opsional)</label>
+                        <input type="file" name="village_head_letter" accept=".pdf,image/*" class="w-full text-sm text-secondary file:mr-3 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-blue-100 file:text-blue-700 file:font-semibold hover:file:bg-blue-600 hover:file:text-white file:transition-colors">
                     </div>
                     <button type="button" onclick="submitResponse(${report.id})" class="btn-primary w-full text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
                         <i class="fas fa-paper-plane"></i> Kirim Tanggapan
@@ -191,6 +210,40 @@ async function submitResponse(reportId) {
 
 function deleteReport(id) {
     confirmDelete(`/admin/laporan/${id}`, () => document.querySelector(`[data-id="${id}"]`)?.closest('tr').remove());
+}
+
+function viewBudget(amount, notes, itemsStr) {
+    const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
+    const formatted = formatter.format(amount);
+    
+    let itemsHtml = '';
+    if (itemsStr) {
+        try {
+            const items = JSON.parse(itemsStr);
+            if (Array.isArray(items) && items.length > 0) {
+                itemsHtml = '<div class="mt-4 mb-2 font-bold text-gray-700 text-left">Rincian Bahan/Biaya:</div><ul class="space-y-1 mb-4">';
+                items.forEach(i => {
+                    itemsHtml += `<li class="flex justify-between text-sm border-b border-gray-100 pb-1 text-gray-600"><span>${i.name}</span><span class="font-semibold text-gray-800">${formatter.format(i.price)}</span></li>`;
+                });
+                itemsHtml += '</ul>';
+            }
+        } catch(e) {}
+    }
+
+    Swal.fire({
+        title: 'Estimasi Anggaran',
+        html: `
+            <div class="text-3xl font-extrabold text-green-600 mb-4 mt-2">${formatted}</div>
+            ${itemsHtml}
+            <div class="text-sm text-gray-600 bg-gray-50 p-4 rounded-xl border border-gray-100 text-left mt-2">
+                <span class="font-bold block mb-1">Catatan Tambahan:</span>
+                ${notes ? notes.replace(/\n/g, '<br>') : '<i>Tidak ada rincian catatan.</i>'}
+            </div>
+        `,
+        icon: 'info',
+        confirmButtonColor: '#2563eb',
+        confirmButtonText: 'Tutup'
+    });
 }
 </script>
 @endpush

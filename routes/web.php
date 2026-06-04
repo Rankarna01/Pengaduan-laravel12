@@ -73,6 +73,10 @@ Route::prefix('admin')
          Route::post('/laporan/{report}/response', [Admin\ReportController::class, 'addResponse'])->name('reports.response');
          Route::delete('/laporan/{report}', [Admin\ReportController::class, 'destroy'])->name('reports.destroy');
 
+         // Budgets
+         Route::get('/anggaran', [Admin\BudgetController::class, 'index'])->name('budgets.index');
+         Route::post('/anggaran/{report}', [Admin\BudgetController::class, 'store'])->name('budgets.store');
+
          // Users
          Route::get('/pengguna', [Admin\UserController::class, 'index'])->name('users.index');
          Route::post('/pengguna', [Admin\UserController::class, 'store'])->name('users.store');

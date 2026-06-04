@@ -100,6 +100,16 @@
                         <button onclick="viewReport({{ $report->id }})" class="flex items-center justify-center gap-2 text-primary bg-primary/10 px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/20 transition-colors flex-1 sm:flex-none">
                             <i class="fas fa-eye"></i> Detail & Tanggapan
                         </button>
+                        @if($report->budget)
+                        <button onclick="viewBudget({{ $report->budget->amount }}, '{{ addslashes($report->budget->notes) }}', '{{ $report->budget->items ? addslashes(json_encode($report->budget->items)) : '' }}')" class="flex items-center justify-center gap-2 text-green-600 bg-green-50 px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-100 transition-colors flex-1 sm:flex-none">
+                            <i class="fas fa-wallet"></i> Lihat Anggaran
+                        </button>
+                        @endif
+                        @if($report->village_head_letter)
+                        <a href="{{ asset('storage/' . $report->village_head_letter) }}" target="_blank" class="flex items-center justify-center gap-2 text-blue-600 bg-blue-50 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-100 transition-colors flex-1 sm:flex-none">
+                            <i class="fas fa-file-contract"></i> Surat Desa
+                        </a>
+                        @endif
                         @if($report->status === 'pending')
                         <button onclick="deleteMyReport({{ $report->id }})" class="flex items-center justify-center gap-2 text-red-500 bg-red-50 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors sm:ml-auto">
                             <i class="fas fa-trash-alt"></i> Batalkan
@@ -383,6 +393,40 @@ async function viewReport(id) {
             <h4 class="font-extrabold text-gray-800 text-lg flex items-center gap-2"><div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary"><i class="fas fa-comments"></i></div> Tanggapan Petugas</h4>
             ${responses}
         </div>`;
+}
+
+function viewBudget(amount, notes, itemsStr) {
+    const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
+    const formatted = formatter.format(amount);
+    
+    let itemsHtml = '';
+    if (itemsStr) {
+        try {
+            const items = JSON.parse(itemsStr);
+            if (Array.isArray(items) && items.length > 0) {
+                itemsHtml = '<div class="mt-4 mb-2 font-bold text-gray-700 text-left">Rincian Bahan/Biaya:</div><ul class="space-y-1 mb-4">';
+                items.forEach(i => {
+                    itemsHtml += `<li class="flex justify-between text-sm border-b border-gray-100 pb-1 text-gray-600"><span>${i.name}</span><span class="font-semibold text-gray-800">${formatter.format(i.price)}</span></li>`;
+                });
+                itemsHtml += '</ul>';
+            }
+        } catch(e) {}
+    }
+
+    Swal.fire({
+        title: 'Estimasi Anggaran',
+        html: `
+            <div class="text-3xl font-extrabold text-green-600 mb-4 mt-2">${formatted}</div>
+            ${itemsHtml}
+            <div class="text-sm text-gray-600 bg-gray-50 p-4 rounded-xl border border-gray-100 text-left mt-2">
+                <span class="font-bold block mb-1">Catatan Tambahan:</span>
+                ${notes ? notes.replace(/\n/g, '<br>') : '<i>Tidak ada rincian catatan.</i>'}
+            </div>
+        `,
+        icon: 'info',
+        confirmButtonColor: '#2563eb',
+        confirmButtonText: 'Tutup'
+    });
 }
 
 function deleteMyReport(id) {

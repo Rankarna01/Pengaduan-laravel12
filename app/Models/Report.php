@@ -10,7 +10,7 @@ class Report extends Model
     protected $fillable = [
         'user_id', 'category_id', 'code', 'title',
         'description', 'location', 'latitude', 'longitude',
-        'photo_damage', 'status',
+        'photo_damage', 'village_head_letter', 'status',
     ];
 
     public function user()
@@ -26,6 +26,11 @@ class Report extends Model
     public function responses()
     {
         return $this->hasMany(Response::class);
+    }
+
+    public function budget()
+    {
+        return $this->hasOne(Budget::class);
     }
 
     public function getStatusLabelAttribute(): string

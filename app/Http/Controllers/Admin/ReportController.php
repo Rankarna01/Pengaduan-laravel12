@@ -12,7 +12,7 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Report::with(['user', 'category', 'responses'])->latest();
+        $query = Report::with(['user', 'category', 'responses', 'budget'])->latest();
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -39,6 +39,14 @@ class ReportController extends Controller
         $request->validate([
             'status' => ['required', 'in:pending,process,completed,rejected'],
         ]);
+
+        if ($request->status === 'completed' && !$report->budget()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengubah status: Anggaran belum diatur untuk laporan ini. Silakan atur anggaran terlebih dahulu.'
+            ], 422);
+        }
+
         $report->update(['status' => $request->status]);
 
         $report->user->notify(new ReportStatusUpdatedNotification($report));
@@ -49,14 +57,27 @@ class ReportController extends Controller
     public function addResponse(Request $request, Report $report)
     {
         $request->validate([
-            'message'     => ['required', 'string'],
-            'photo_repair'=> ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-            'status'      => ['required', 'in:pending,process,completed,rejected'],
+            'message'              => ['required', 'string'],
+            'photo_repair'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'village_head_letter'  => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+            'status'               => ['required', 'in:pending,process,completed,rejected'],
         ]);
 
         $photoPath = null;
         if ($request->hasFile('photo_repair')) {
             $photoPath = $request->file('photo_repair')->store('responses', 'public');
+        }
+
+        if ($request->hasFile('village_head_letter')) {
+            $letterPath = $request->file('village_head_letter')->store('letters', 'public');
+            $report->update(['village_head_letter' => $letterPath]);
+        }
+
+        if ($request->status === 'completed' && !$report->budget()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengubah status: Anggaran belum diatur untuk laporan ini. Silakan atur anggaran di menu Manajemen Anggaran terlebih dahulu.'
+            ], 422);
         }
 
         $response = Response::create([

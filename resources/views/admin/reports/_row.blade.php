@@ -27,6 +27,12 @@ $statusLabels  = ['pending'=>'Menunggu','process'=>'Diproses','completed'=>'Sele
                     class="p-1.5 rounded-lg bg-primary-100 text-primary hover:bg-primary hover:text-white transition-colors" title="Detail & Tanggapan">
                 <i class="fas fa-eye text-sm"></i>
             </button>
+            @if($report->budget)
+            <button onclick="viewBudget({{ $report->budget->amount }}, '{{ addslashes($report->budget->notes) }}', '{{ $report->budget->items ? addslashes(json_encode($report->budget->items)) : '' }}')"
+                    class="p-1.5 rounded-lg bg-green-100 text-green-600 hover:bg-green-600 hover:text-white transition-colors" title="Detail Anggaran">
+                <i class="fas fa-wallet text-sm"></i>
+            </button>
+            @endif
             <button onclick="deleteReport({{ $report->id }})"
                     class="p-1.5 rounded-lg bg-red-100 text-red-500 hover:bg-red-500 hover:text-white transition-colors" title="Hapus">
                 <i class="fas fa-trash text-sm"></i>

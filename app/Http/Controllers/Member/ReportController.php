@@ -64,7 +64,7 @@ class ReportController extends Controller
     public function show(Report $report)
     {
         if ($report->user_id !== auth()->id()) abort(403);
-        $report->load(['category', 'responses.admin']);
+        $report->load(['category', 'responses.admin', 'budget']);
         return response()->json($report);
     }
 
