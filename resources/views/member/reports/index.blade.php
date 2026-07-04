@@ -17,6 +17,28 @@
             </button>
         </div>
 
+        {{-- Form Filter --}}
+        <form method="GET" action="{{ route('member.reports.index') }}" class="mb-6 flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-2xl shadow-sm border border-gray-100" data-aos="fade-up">
+            <div class="flex-1 relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul laporan..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50 focus:bg-white transition-all">
+            </div>
+            <div class="sm:w-48 relative">
+                <i class="far fa-calendar-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="date" name="date" value="{{ request('date') }}" class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50 focus:bg-white transition-all text-gray-600">
+            </div>
+            <div class="flex gap-2">
+                <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-gray-900/20 transition-all flex items-center gap-2">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+                @if(request('search') || request('date'))
+                <a href="{{ route('member.reports.index') }}" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-center" title="Reset Filter">
+                    <i class="fas fa-times"></i>
+                </a>
+                @endif
+            </div>
+        </form>
+
         {{-- Reports List --}}
         <div class="space-y-5" id="reportsList">
             @forelse($reports as $report)

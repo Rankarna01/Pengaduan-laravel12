@@ -12,12 +12,21 @@ use Illuminate\Support\Facades\Notification;
 
 class ReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $reports = Report::where('user_id', auth()->id())
+        $query = Report::where('user_id', auth()->id())
                          ->with(['category', 'responses.admin'])
-                         ->latest()
-                         ->paginate(10);
+                         ->latest();
+
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
+        }
+
+        $reports = $query->paginate(10)->withQueryString();
         $categories = Category::all();
         return view('member.reports.index', compact('reports', 'categories'));
     }
