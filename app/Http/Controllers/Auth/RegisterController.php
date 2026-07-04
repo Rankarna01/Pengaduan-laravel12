@@ -23,6 +23,7 @@ class RegisterController extends Controller
             'email'                 => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone'                 => ['nullable', 'string', 'max:20'],
             'alamat'                => ['required', 'string'],
+            'dusun'                 => ['required', 'in:Penam Raya,Buin Gali,Kabuyit Timur,Langam,Bringin Dalam,Lagenang,Sigar Mandang,Kabuyit Barat,Buin Panan'],
             'password'              => ['required', 'string', 'min:8', 'confirmed'],
         ], [
             'nik.required'          => 'NIK wajib diisi.',
@@ -32,6 +33,8 @@ class RegisterController extends Controller
             'email.required'        => 'Email wajib diisi.',
             'email.unique'          => 'Email sudah terdaftar.',
             'alamat.required'       => 'Alamat wajib diisi.',
+            'dusun.required'        => 'Dusun wajib dipilih.',
+            'dusun.in'              => 'Pilihan dusun tidak valid.',
             'password.required'     => 'Password wajib diisi.',
             'password.min'          => 'Password minimal 8 karakter.',
             'password.confirmed'    => 'Konfirmasi password tidak cocok.',
@@ -43,6 +46,7 @@ class RegisterController extends Controller
             'email'    => $validated['email'],
             'phone'    => $validated['phone'] ?? null,
             'alamat'   => $validated['alamat'],
+            'dusun'    => $validated['dusun'],
             'password' => Hash::make($validated['password']),
             'role'     => 'masyarakat',
         ]);

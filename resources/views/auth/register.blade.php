@@ -100,6 +100,18 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <i class="fas fa-map-signs mr-1 text-secondary"></i> Dusun <span class="text-danger">*</span>
+                    </label>
+                    <select name="dusun" required class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm @error('dusun') border-danger @enderror">
+                        <option value="" disabled {{ old('dusun') ? '' : 'selected' }}>-- Pilih Dusun --</option>
+                        @foreach(['Penam Raya', 'Buin Gali', 'Kabuyit Timur', 'Langam', 'Bringin Dalam', 'Lagenang', 'Sigar Mandang', 'Kabuyit Barat', 'Buin Panan'] as $d)
+                            <option value="{{ $d }}" {{ old('dusun') == $d ? 'selected' : '' }}>{{ $d }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
                         <i class="fas fa-lock mr-1 text-secondary"></i> Password <span class="text-danger">*</span>
                     </label>
                     <div class="relative" x-data="{ show: false }">

@@ -25,6 +25,7 @@ class ProfileController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'phone' => ['nullable', 'string', 'max:20'],
             'alamat'=> ['required', 'string'],
+            'dusun' => ['required', 'in:Penam Raya,Buin Gali,Kabuyit Timur,Langam,Bringin Dalam,Lagenang,Sigar Mandang,Kabuyit Barat,Buin Panan'],
         ]);
 
         $user->update($validated);

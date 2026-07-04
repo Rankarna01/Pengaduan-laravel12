@@ -70,6 +70,17 @@
                             @error('alamat') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
 
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Dusun</label>
+                            <select name="dusun" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50 focus:bg-white transition-all">
+                                <option value="" disabled {{ old('dusun', $user->dusun) ? '' : 'selected' }}>-- Pilih Dusun --</option>
+                                @foreach(['Penam Raya', 'Buin Gali', 'Kabuyit Timur', 'Langam', 'Bringin Dalam', 'Lagenang', 'Sigar Mandang', 'Kabuyit Barat', 'Buin Panan'] as $d)
+                                    <option value="{{ $d }}" {{ old('dusun', $user->dusun) == $d ? 'selected' : '' }}>{{ $d }}</option>
+                                @endforeach
+                            </select>
+                            @error('dusun') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
                         <div class="pt-2">
                             <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition-colors shadow-lg shadow-primary/30">
                                 Simpan Perubahan

@@ -9,9 +9,14 @@ $statusLabels  = ['pending'=>'Menunggu','process'=>'Diproses','completed'=>'Sele
         <p class="text-xs text-secondary"><i class="fas fa-map-marker-alt mr-1"></i>{{ Str::limit($report->location, 35) }}</p>
     </td>
     <td class="px-5 py-3.5">
-        <div class="flex items-center gap-2">
-            <img src="{{ $report->user->avatar_url }}" class="w-6 h-6 rounded-full">
-            <span class="text-gray-700 text-sm font-medium">{{ $report->user->name }}</span>
+        <div class="flex items-center gap-3">
+            <img src="{{ $report->user->avatar_url }}" class="w-8 h-8 rounded-full shadow-sm border border-gray-100">
+            <div>
+                <span class="text-gray-800 text-sm font-bold block">{{ $report->user->name }}</span>
+                @if($report->user->dusun)
+                <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider flex items-center mt-0.5"><i class="fas fa-map-signs mr-1.5 text-primary/70"></i> {{ $report->user->dusun }}</span>
+                @endif
+            </div>
         </div>
     </td>
     <td class="px-5 py-3.5 text-sm text-gray-700">{{ $report->category->name }}</td>
