@@ -27,21 +27,24 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
             @php
             $statCards = [
-                ['label'=>'Total Laporan','val'=>$stats['total'] ?? 0,     'icon'=>'fa-folder-open',   'bg'=>'bg-blue-50',    'text'=>'text-blue-600', 'border'=>'border-blue-100'],
-                ['label'=>'Menunggu',     'val'=>$stats['pending'] ?? 0,   'icon'=>'fa-clock',         'bg'=>'bg-orange-50',  'text'=>'text-orange-500', 'border'=>'border-orange-100'],
-                ['label'=>'Diproses',     'val'=>$stats['process'] ?? 0,   'icon'=>'fa-tools',         'bg'=>'bg-purple-50',  'text'=>'text-purple-500', 'border'=>'border-purple-100'],
-                ['label'=>'Selesai',      'val'=>$stats['completed'] ?? 0, 'icon'=>'fa-check-circle',  'bg'=>'bg-green-50',   'text'=>'text-green-500', 'border'=>'border-green-100'],
+                ['label'=>'Total Laporan','val'=>$stats['total'] ?? 0,     'icon'=>'fa-folder-open',   'bg'=>'bg-blue-50',    'text'=>'text-blue-600', 'border'=>'border-blue-100',   'status'=>'all'],
+                ['label'=>'Menunggu',     'val'=>$stats['pending'] ?? 0,   'icon'=>'fa-clock',         'bg'=>'bg-orange-50',  'text'=>'text-orange-500','border'=>'border-orange-100', 'status'=>'pending'],
+                ['label'=>'Diproses',     'val'=>$stats['process'] ?? 0,   'icon'=>'fa-tools',         'bg'=>'bg-purple-50',  'text'=>'text-purple-500','border'=>'border-purple-100', 'status'=>'process'],
+                ['label'=>'Selesai',      'val'=>$stats['completed'] ?? 0, 'icon'=>'fa-check-circle',  'bg'=>'bg-green-50',   'text'=>'text-green-500', 'border'=>'border-green-100',  'status'=>'completed'],
             ];
             @endphp
             
             @foreach($statCards as $i => $c)
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:-translate-y-1 transition-transform duration-300" data-aos="fade-up" data-aos-delay="{{ $i * 80 }}">
+            <a href="{{ route('member.dashboard') }}?status={{ $c['status'] }}"
+               class="bg-white rounded-2xl border shadow-sm p-6 hover:-translate-y-1 transition-transform duration-300 block
+                      {{ $activeStatus === $c['status'] ? 'border-primary ring-2 ring-primary/20' : 'border-gray-100' }}"
+               data-aos="fade-up" data-aos-delay="{{ $i * 80 }}">
                 <div class="w-12 h-12 {{ $c['bg'] }} border {{ $c['border'] }} rounded-xl flex items-center justify-center mb-4">
                     <i class="fas {{ $c['icon'] }} {{ $c['text'] }} text-lg"></i>
                 </div>
                 <p class="text-3xl font-extrabold text-gray-800 mb-1">{{ $c['val'] }}</p>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">{{ $c['label'] }}</p>
-            </div>
+            </a>
             @endforeach
         </div>
 
@@ -49,12 +52,44 @@
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden" data-aos="fade-up">
             <div class="flex items-center justify-between p-6 border-b border-gray-50">
                 <div>
-                    <h2 class="font-extrabold text-gray-800 text-lg">Laporan Terbaru</h2>
-                    <p class="text-xs text-gray-500 mt-0.5">5 laporan terakhir yang Anda buat</p>
-                </div>
-                <a href="{{ route('member.reports.index') }}" class="text-primary text-sm font-bold hover:text-primary/80 flex items-center gap-2 transition-colors">
-                    Lihat Semua <i class="fas fa-arrow-right text-xs"></i>
-                </a>
+                <h2 class="font-extrabold text-gray-800 text-lg">
+                    @if($activeStatus === 'all') Laporan Terbaru
+                    @elseif($activeStatus === 'pending') Laporan Menunggu
+                    @elseif($activeStatus === 'process') Laporan Diproses
+                    @elseif($activeStatus === 'completed') Laporan Selesai
+                    @elseif($activeStatus === 'rejected') Laporan Ditolak
+                    @endif
+                </h2>
+                <p class="text-xs text-gray-500 mt-0.5">
+                    {{ $activeStatus === 'all' ? '5 laporan terakhir yang Anda buat' : 'Laporan berdasarkan status yang dipilih' }}
+                </p>
+            </div>
+            <a href="{{ route('member.reports.index') }}" class="text-primary text-sm font-bold hover:text-primary/80 flex items-center gap-2 transition-colors">
+                Lihat Semua <i class="fas fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+        {{-- Filter Tabs --}}
+        <div class="flex flex-wrap gap-2 px-6 pb-4 border-b border-gray-50">
+            @php
+            $tabs = [
+                'all'       => ['label' => 'Semua',    'color' => 'text-gray-600',   'bg' => 'bg-gray-100',   'active_bg' => 'bg-gray-800 text-white'],
+                'pending'   => ['label' => 'Menunggu', 'color' => 'text-orange-600', 'bg' => 'bg-orange-50',  'active_bg' => 'bg-orange-500 text-white'],
+                'process'   => ['label' => 'Diproses', 'color' => 'text-blue-600',   'bg' => 'bg-blue-50',    'active_bg' => 'bg-blue-600 text-white'],
+                'completed' => ['label' => 'Selesai',  'color' => 'text-green-600',  'bg' => 'bg-green-50',   'active_bg' => 'bg-green-600 text-white'],
+                'rejected'  => ['label' => 'Ditolak',  'color' => 'text-red-600',    'bg' => 'bg-red-50',     'active_bg' => 'bg-red-500 text-white'],
+            ];
+            @endphp
+            @foreach($tabs as $key => $tab)
+            <a href="{{ route('member.dashboard') }}?status={{ $key }}"
+               class="px-4 py-1.5 rounded-full text-xs font-bold transition-all
+                      {{ $activeStatus === $key ? $tab['active_bg'] : $tab['color'] . ' ' . $tab['bg'] . ' hover:opacity-80' }}">
+                {{ $tab['label'] }}
+                @if($key !== 'all')
+                <span class="ml-1 opacity-70">({{ $stats[$key] ?? 0 }})</span>
+                @endif
+            </a>
+            @endforeach
             </div>
             
             <div class="divide-y divide-gray-50">
