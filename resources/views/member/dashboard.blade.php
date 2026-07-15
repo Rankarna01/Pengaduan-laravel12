@@ -64,7 +64,7 @@
                     {{ $activeStatus === 'all' ? '5 laporan terakhir yang Anda buat' : 'Laporan berdasarkan status yang dipilih' }}
                 </p>
             </div>
-            <a href="{{ route('member.reports.index') }}" class="text-primary text-sm font-bold hover:text-primary/80 flex items-center gap-2 transition-colors">
+            <a href="{{ route('member.reports.index') }}@if($activeStatus !== 'all')?status={{ $activeStatus }}@endif" class="text-primary text-sm font-bold hover:text-primary/80 flex items-center gap-2 transition-colors">
                 Lihat Semua <i class="fas fa-arrow-right text-xs"></i>
             </a>
         </div>

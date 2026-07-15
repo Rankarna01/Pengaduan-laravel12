@@ -19,6 +19,9 @@
 
         {{-- Form Filter --}}
         <form method="GET" action="{{ route('member.reports.index') }}" class="mb-6 flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-2xl shadow-sm border border-gray-100" data-aos="fade-up">
+            @if($activeStatus !== 'all')
+            <input type="hidden" name="status" value="{{ $activeStatus }}">
+            @endif
             <div class="flex-1 relative">
                 <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul laporan..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-gray-50 focus:bg-white transition-all">
@@ -31,13 +34,29 @@
                 <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-gray-900/20 transition-all flex items-center gap-2">
                     <i class="fas fa-filter"></i> Filter
                 </button>
-                @if(request('search') || request('date'))
+                @if(request('search') || request('date') || $activeStatus !== 'all')
                 <a href="{{ route('member.reports.index') }}" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-center" title="Reset Filter">
                     <i class="fas fa-times"></i>
                 </a>
                 @endif
             </div>
         </form>
+
+        @php
+        $statusLabels = ['pending' => 'Menunggu', 'process' => 'Diproses', 'completed' => 'Selesai', 'rejected' => 'Ditolak'];
+        $statusColors = ['pending' => 'bg-orange-50 text-orange-600 border-orange-200', 'process' => 'bg-blue-50 text-blue-600 border-blue-200', 'completed' => 'bg-green-50 text-green-600 border-green-200', 'rejected' => 'bg-red-50 text-red-600 border-red-200'];
+        @endphp
+
+        {{-- Status Filter Badge --}}
+        @if($activeStatus !== 'all')
+        <div class="mb-4 flex items-center gap-2" data-aos="fade-up">
+            <span class="text-sm font-medium text-gray-500">Menampilkan laporan:</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold border {{ $statusColors[$activeStatus] ?? 'bg-gray-100 text-gray-600 border-gray-200' }}">
+                {{ $statusLabels[$activeStatus] ?? $activeStatus }}
+            </span>
+            <a href="{{ route('member.reports.index') }}" class="text-xs font-bold text-red-500 hover:text-red-700 underline transition-colors">Tampilkan Semua</a>
+        </div>
+        @endif
 
         {{-- Reports List --}}
         <div class="space-y-5" id="reportsList">
@@ -145,11 +164,29 @@
                 <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-5 border border-gray-100">
                     <i class="fas fa-folder-open text-5xl text-gray-300"></i>
                 </div>
-                <h3 class="text-xl font-extrabold text-gray-800 mb-2">Belum Ada Laporan</h3>
-                <p class="text-gray-500 text-sm mb-8 max-w-sm mx-auto">Anda belum pernah membuat laporan. Mari mulai berpartisipasi melaporkan kerusakan infrastruktur di desa kita.</p>
+                <h3 class="text-xl font-extrabold text-gray-800 mb-2">
+                    @if($activeStatus !== 'all')
+                        Tidak Ada Laporan {{ $statusLabels[$activeStatus] ?? '' }}
+                    @else
+                        Belum Ada Laporan
+                    @endif
+                </h3>
+                <p class="text-gray-500 text-sm mb-8 max-w-sm mx-auto">
+                    @if($activeStatus !== 'all')
+                        Anda belum memiliki laporan dengan status "{{ $statusLabels[$activeStatus] ?? $activeStatus }}".
+                    @else
+                        Anda belum pernah membuat laporan. Mari mulai berpartisipasi melaporkan kerusakan infrastruktur di desa kita.
+                    @endif
+                </p>
+                @if($activeStatus !== 'all')
+                <a href="{{ route('member.reports.index') }}" class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-bold inline-flex items-center justify-center gap-2 shadow-lg transition-all">
+                    <i class="fas fa-list"></i> Tampilkan Semua Laporan
+                </a>
+                @else
                 <button onclick="openCreateModal()" class="btn-primary bg-primary text-white px-8 py-3.5 rounded-xl text-sm font-bold inline-flex items-center justify-center gap-2 shadow-lg shadow-primary/30 hover:-translate-y-0.5 transition-all">
                     <i class="fas fa-plus"></i> Buat Laporan Pertama
                 </button>
+                @endif
             </div>
             @endforelse
         </div>

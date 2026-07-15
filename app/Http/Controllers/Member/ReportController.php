@@ -18,6 +18,11 @@ class ReportController extends Controller
                          ->with(['category', 'responses.admin'])
                          ->latest();
 
+        $activeStatus = $request->get('status', 'all');
+        if ($activeStatus !== 'all' && in_array($activeStatus, ['pending', 'process', 'completed', 'rejected'])) {
+            $query->where('status', $activeStatus);
+        }
+
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
@@ -28,7 +33,7 @@ class ReportController extends Controller
 
         $reports = $query->paginate(10)->withQueryString();
         $categories = Category::all();
-        return view('member.reports.index', compact('reports', 'categories'));
+        return view('member.reports.index', compact('reports', 'categories', 'activeStatus'));
     }
 
     public function store(Request $request)
